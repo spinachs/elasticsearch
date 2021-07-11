@@ -74,6 +74,7 @@ public class UpdateHelper extends AbstractComponent {
 
     /**
      * Prepares an update request by converting it into an index or delete request or an update response (no action).
+     * 读取routing、parent、ttl和timestamp信息
      */
     public Result prepare(UpdateRequest request, IndexShard indexShard, LongSupplier nowInMillis) {
         final GetResult getResult = indexShard.getService().get(request.type(), request.id(),
@@ -89,6 +90,7 @@ public class UpdateHelper extends AbstractComponent {
     protected Result prepare(ShardId shardId, UpdateRequest request, final GetResult getResult, LongSupplier nowInMillis) {
         long getDateNS = System.nanoTime();
         if (!getResult.isExists()) {
+            //不存在则直接创建
             if (request.upsertRequest() == null && !request.docAsUpsert()) {
                 throw new DocumentMissingException(shardId, request.type(), request.id());
             }
@@ -165,6 +167,7 @@ public class UpdateHelper extends AbstractComponent {
         String parent = getResult.getFields().containsKey(ParentFieldMapper.NAME) ? getResult.field(ParentFieldMapper.NAME).getValue().toString() : null;
 
         if (request.script() == null && request.doc() != null) {
+            //处理doc中内容
             IndexRequest indexRequest = request.doc();
             updatedSourceAsMap = sourceAndContent.v2();
             if (indexRequest.ttl() != null) {
@@ -177,6 +180,7 @@ public class UpdateHelper extends AbstractComponent {
             if (indexRequest.parent() != null) {
                 parent = indexRequest.parent();
             }
+            //更新文档
             boolean noop = !XContentHelper.update(updatedSourceAsMap, indexRequest.sourceAsMap(), request.detectNoop());
             // noop could still be true even if detectNoop isn't because update detects empty maps as noops.  BUT we can only
             // actually turn the update into a noop if detectNoop is true to preserve backwards compatibility and to handle
