@@ -1,8 +1,6 @@
 [[release-highlights]]
 == What's new in {minor-version}
 
-coming[{minor-version}]
-
 Here are the highlights of what's new and improved in {es} {minor-version}! 
 For detailed information about this release, see the 
 <<release-notes-{elasticsearch_version}, Release notes >>  and 
@@ -19,9 +17,35 @@ Other versions:
 | {ref-bare}/7.1/release-highlights-7.1.0.html[7.1]
 | {ref-bare}/7.0/release-highlights-7.0.0.html[7.0]
 
+// tag::notable-highlights[]
+[discrete]
+[[add-composable-index-templates]]
+=== Composable index templates
+
+Index templates are an easy, repeatable way to configure mappings, index
+settings, and aliases for new indices. However, in previous versions, you had to
+define these configurations directly in the template. Managing multiple
+templates often meant copying similar configurations across templates.
+
+In 7.8, we added a more modular version of index templates called composable
+index templates. You can still define configurations directly in these
+templates. However, composable index templates can also contain component
+templates. Also added in 7.8, component templates are reusable configurations
+for mappings, index settings, and aliases. With a component template, you can
+define a configuration once and reuse it across multiple index templates. If you
+later need to change the configuration, you only need to change its component
+template.
+
+Composable index templates replace the previous version of index templates,
+which are now deprecated. If an index matches both a composable template and a
+legacy index template, {es} uses the composable template.
+
+To get started with composable index templates, see
+{ref}/index-templates.html[Index templates].
+// end::notable-highlights[]
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 === Geo improvements
 
 We have made several improvements to geo support in {es} 7.8.
@@ -40,7 +64,7 @@ from all coordinate values for a geo_point field.
 // end::notable-highlights[]
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 === Add support for t-test aggregations
 
 {es} now supports a `t_test` metrics
@@ -56,7 +80,7 @@ statistically significant and did not occur by chance alone. See
 // end::notable-highlights[]
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 === Expose aggregation usage in feature usage API
 
 It is now possible to fetch a count of aggregations that have been executed
@@ -73,7 +97,7 @@ lot and could perhaps can be eliminated.
 
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 === Support `value_count` and `avg` aggregations over histogram fields
 
 {es} now implements `value_count` and `avg` aggregations over histogram
@@ -91,7 +115,7 @@ array.
 // end::notable-highlights[]
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 === Reduce aggregation memory consumption
 
 {es} now attempts to save memory on the coordinating node by delaying
@@ -107,7 +131,7 @@ the memory usage as low as possible between reductions.
 // end::notable-highlights[]
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 === Scalar functions now supported in SQL aggregations
 
 When querying {es} using SQL, it is now possible to use scalar functions
@@ -127,7 +151,7 @@ HAVING
 
 // end::notable-highlights[]
 // tag::notable-highlights[]
-[float]
+[discrete]
 [[release-highlights-7.8.0-throttling]]
 === Increase the performance and scalability of {transforms} with throttling
 
@@ -140,7 +164,7 @@ create or update your {transform}.
 
 // end::notable-highlights[]
 // tag::notable-highlights[]
-[float]
+[discrete]
 [[release-highlights-7.8.0-mml]]
 === Better estimates for {ml} model memory usage
 
@@ -153,7 +177,7 @@ being analyzed.
  
 // end::notable-highlights[]
 // tag::notable-highlights[]
-[float]
+[discrete]
 [[release-highlights-7.8.0-loss-functions]]
 === Additional loss functions for {regression}
 
@@ -167,7 +191,7 @@ loss function that fits best with your data set.
 // end::notable-highlights[]
 
 // tag::notable-highlights[]
-[float]
+[discrete]
 [[release-highlights-7.8.0-data-visualizer]]
 === Extended upload limit and explanations for Data Visualizer
 
@@ -177,3 +201,15 @@ after both successful and unsuccessful analysis which makes it easier to
 diagnose issues with file upload.
 
 // end::notable-highlights[]
+
+
+// tag::notable-highlights[]
+[discrete]
+[[release-highlights-7.8.1-ccr-out-of-memory-fix]]
+==== Fixed out-of-memory error when using {ccr} with large documents
+
+A bug caused {ccr} to use more memory than configured with large documents,
+which could cause memory pressure or even out-of-memory errors in some cases.
+
+// end::notable-highlights[]
+
